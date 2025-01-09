@@ -46,3 +46,9 @@ hasRated(address user, uint256 modelId) (If implemented)
 Inputs:
 user: The address of the user (e.g., 0x123...).
 modelId: The ID of the model (e.g., 0, 1).
+
+![Описание изображения](screens/metamask.png)
+
+![Описание изображения](screens/ganache.png)
+
+There you can see the transactions action from Meta-Mask and Ganache account.
