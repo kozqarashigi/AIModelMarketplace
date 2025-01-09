@@ -36,6 +36,9 @@ getModelDetails(uint256 modelId)
 Inputs:
 modelId: The ID of the model to fetch details for (e.g., 0, 1).
 
+![Описание изображения](screens/withdrawfunds.png)
+
+Its the ouput of withdrawFunds() function. 
 ![Описание изображения](screens/hasRated.png)
 
 hasRated(address user, uint256 modelId) (If implemented)
