@@ -18,7 +18,7 @@ The AI Model Marketplace is a decentralized application (dApp) that enables user
 - `withdrawFunds()`: Allows the contract owner to withdraw funds from sales.
 - `getModelDetails(uint256 modelId)`: Retrieves the details of a specific AI model.
 
-  ## Deployment
+## Deployment
 ![Описание изображения](screens/listModel.png)
 
 `listModel()` function and how it works: user need to input name, description of the AI model and cost of it
