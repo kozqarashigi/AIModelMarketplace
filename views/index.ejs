@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI model marketplace</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <h1>AI model marketplace</h1>
+    <div class="models">
+        <% models.forEach(model => { %>
+          <div class="model">
+            <h2><%= model.name %></h2>
+            <div class="stars" data-rating="<%= model.averageRating %>">
+              <div class="rating">
+                <span class="star" data-index="1">&#9733;</span>
+                <span class="star" data-index="2">&#9733;</span>
+                <span class="star" data-index="3">&#9733;</span>
+                <span class="star" data-index="4">&#9733;</span>
+                <span class="star" data-index="5">&#9733;</span>
+              </div>
+            </div>
+            <a class="more" href="/details/<%= model.id %>">More Details</a>
+            <a class="purchase" href="/purchase/<%= model.id %>">Purchase</a>
+            <a class="delete" href="/delete-model/<%= model.id %>">Delete</a>
+          </div>
+        <% }) %>
+    </div>
+    <a class="add_model" href="/add">List new model</a>
+    <script>
+      function setRating(element, averageRating) {
+        const stars = element.querySelectorAll('.star');
+        stars.forEach(star => {
+          const starIndex = parseInt(star.getAttribute('data-index'));
+          if (starIndex <= averageRating) {
+            star.classList.add('filled');
+          } else {
+            star.classList.remove('filled');
+          }
+        });
+      }
+      document.querySelectorAll('.stars').forEach(starContainer => {
+        const rating = parseInt(starContainer.getAttribute('data-rating'));
+        setRating(starContainer, rating);
+      });
+    </script>
+</body>
+</html>

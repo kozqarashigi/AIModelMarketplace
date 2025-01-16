@@ -1,0 +1,138 @@
+body {
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    margin: 20px;
+    background-color: rgb(8, 36, 60);
+    color: white;
+    text-align: center;
+}
+ul {
+    list-style-type:circle;
+    list-style-position: inside; 
+    padding-left: 0; 
+    margin-left: 0;
+}
+li {
+    margin: 20px 0;
+}
+.add_model {
+    display: block; /* Оставляем ссылку блочной */
+    margin-top: 40px; /* Отступ сверху */
+    margin-left: 695px; /* Отступ слева */
+    text-align: center; /* Центрируем текст */
+    width: 100px;
+    font-size: 16px; /* Размер текста */
+    text-decoration: none; /* Убираем подчеркивание */
+    color: white; /* Цвет текста */
+    background-color: #007BFF; /* Цвет фона кнопки */
+    padding: 10px; /* Отступы внутри кнопки */
+    
+    border-radius: 5px; /* Скругляем края */
+    white-space: nowrap; /* Запрещаем перенос текста */
+    
+}
+button {
+    background-color: rgb(247, 147, 147);
+    color: rgb(0, 0, 0);
+    border: none;
+    padding: 8px 10px;
+    cursor: pointer;
+    border-radius: 10px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 15px;
+}
+
+input[type="text"] {
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+.inside-button{
+    background-color: rgb(135, 169, 250);
+}
+.back{
+    width: 30px;
+    height: 30px;
+    position: fixed;
+    left: 600px;
+    top: 25px;
+}
+
+.more, .purchase, .delete {
+    text-decoration: none;
+    background-color: white;
+    color: black;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    padding: 8px 11px;
+}
+.models {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.model {
+    margin-bottom: 20px; /* Увеличивает отступ между блоками моделей */
+    text-align: center; /* Центрирует содержимое внутри модели */
+}
+
+.reviewForm {
+    max-width: 400px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    font-size: 18px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.rating {
+    font-size: 24px;
+    color: gray;
+  }
+  
+.star {
+    margin-right: 5px;
+  }
+  
+.star.filled {
+    color: gold;
+  }
+
+.stars{
+    margin-top: -20px;
+    margin-bottom: 20px;
+}
+.model-table {
+    width: 80%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    margin-left: 150px;
+}
+
+.model-table thead {
+    color: black;
+}
+
+.model-table th, .model-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.model-table th {
+    background-color: #f4f4f4;
+}
+
+.rating .star {
+    color: #ccc;
+    font-size: 18px;
+}
+
+.rating .star.filled {
+    color: gold;
+}

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase model</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <h1>Purchase <%= model.name %></h1>
+    <p><strong>Price:</strong> <%= model.price %> ETH</p>
+
+    <form action="/purchase/<%= model.id %>" method="POST">
+        <label for="payment">Enter payment amount (ETH):</label>
+        <input type="number" name="payment" id="payment" value="<%= model.price %>" step="any" required>
+        <button type="submit">Purchase</button>
+    </form>
+
+    <a href="/">
+        <img class="back" src="/back.png">
+    </a>
+</body>
+</html>
