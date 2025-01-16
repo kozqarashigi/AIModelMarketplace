@@ -360,7 +360,7 @@ const __dirname = path.dirname(__filename);
 
 // Example usage
 app.set('views', path.join(__dirname, 'views'));
-const contractAddress = '0x92e858d5fB0C180007B9F23685eCc54E5a9287bE'; // Replace with your contract address
+const contractAddress = '0x63a4E3b2fAF514782744eB2783fDdD8cD5Ef32a9'; // Replace with your contract address
 const contract = new web3.eth.Contract(contractABI, contractAddress);
 async function interactWithContract(modelId) {
     try {
@@ -371,7 +371,8 @@ async function interactWithContract(modelId) {
         }
 
         // If valid, proceed with the transaction
-        const result = await contract.methods.purchaseModel(modelId).send({ from: '0xa7eB8119577104D0b65bF0226276931cEad394A8' });
+		const accounts = await web3.eth.getAccounts();
+        const result = await contract.methods.purchaseModel(modelId).send({ from: accounts[1]});
         console.log("Transaction successful:", result);
     } catch (error) {
         console.error("Error:", error.message);
