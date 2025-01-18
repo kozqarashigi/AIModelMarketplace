@@ -154,6 +154,10 @@ Then rating will be shown on the main page, as well as in the details page.
 If the model is not more needed, user can delete it from the list.
 ![Описание изображения](screens/mainpage.png)
 
+## Deployment in Sepolia Network
+
+![Описание изображения](screens/sepoliaeth.png)
+
 ## Conclusion
 
 This assignment successfully combines blockchain development with frontend integration to create a functional decentralized application. By implementing features such as listing, purchasing, and rating AI models, the project demonstrates the potential of smart contracts to facilitate transparent and secure transactions. The integration of `web3.js` with a user-friendly interface bridges the gap between blockchain technology and end-users.
