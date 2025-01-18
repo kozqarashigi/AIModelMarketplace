@@ -156,7 +156,7 @@ If the model is not more needed, user can delete it from the list.
 
 ## Deployment in Sepolia Network
 
-![Описание изображения](screens/sepoliaeth.png)
+![Описание изображения](screens/sepoliaeth.jpg)
 
 ## Conclusion
 
