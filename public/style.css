@@ -1,8 +1,8 @@
 body {
-    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-family: 'Poppins', sans-serif;
     margin: 20px;
-    background-color: rgb(8, 36, 60);
-    color: white;
+    background-color: rgb(255, 251, 251);
+    color: rgb(0, 0, 0);
     text-align: center;
 }
 ul {
@@ -14,20 +14,12 @@ ul {
 li {
     margin: 20px 0;
 }
-.add_model {
-    display: block; /* Оставляем ссылку блочной */
-    margin-top: 40px; /* Отступ сверху */
-    margin-left: 695px; /* Отступ слева */
-    text-align: center; /* Центрируем текст */
-    width: 100px;
-    font-size: 16px; /* Размер текста */
-    text-decoration: none; /* Убираем подчеркивание */
-    color: white; /* Цвет текста */
-    background-color: #007BFF; /* Цвет фона кнопки */
-    padding: 10px; /* Отступы внутри кнопки */
-    
-    border-radius: 5px; /* Скругляем края */
-    white-space: nowrap; /* Запрещаем перенос текста */
+.small-icon {
+    width: 40px;
+    height: 40px;
+    position: fixed;
+    left: 240px;
+    top:150px;
     
 }
 button {
@@ -52,27 +44,36 @@ input[type="text"] {
     width: 30px;
     height: 30px;
     position: fixed;
-    left: 600px;
+    left: 550px;
     top: 25px;
 }
 
 .more, .purchase, .delete {
     text-decoration: none;
-    background-color: white;
-    color: black;
+    background-color: rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
     border-radius: 10px;
     margin-bottom: 20px;
     padding: 8px 11px;
 }
 .models {
+    margin-top: 150px;
+    margin-left: 300px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
     align-items: center;
+    gap: 10px; 
 }
 
 .model {
-    margin-bottom: 20px; /* Увеличивает отступ между блоками моделей */
-    text-align: center; /* Центрирует содержимое внутри модели */
+    background-color: white;
+    margin-bottom: 20px; 
+    text-align: center; 
+    width: 330px;
+    height: 180px;
+    border-radius: 15px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
 
 .reviewForm {
@@ -115,7 +116,8 @@ label {
 }
 
 .model-table thead {
-    color: black;
+    color: rgb(255, 255, 255);
+
 }
 
 .model-table th, .model-table td {
@@ -125,7 +127,7 @@ label {
 }
 
 .model-table th {
-    background-color: #f4f4f4;
+    background-color: #000000;
 }
 
 .rating .star {
@@ -135,4 +137,8 @@ label {
 
 .rating .star.filled {
     color: gold;
+}
+
+.balance-container{
+    
 }

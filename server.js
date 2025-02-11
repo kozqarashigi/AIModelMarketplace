@@ -1,366 +1,42 @@
+import session from 'express-session';
 import { Web3 } from 'web3';
+import { ethers } from "ethers";
 import express from 'express';
 import bodyParser from 'body-parser';
 const app = express();
 import { fileURLToPath } from 'url';
 import path from 'path';
-
-
+import fs from "fs";
+import multer from 'multer';  
 
 
 // Web3 setup
+const filesDB = {};
 const web3 = new Web3('http://127.0.0.1:7545'); // Replace with your Web3 provider URL
-const contractABI = [
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "modelId",
-				"type": "uint256"
-			}
-		],
-		"name": "deleteModel",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "name",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "description",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "price",
-				"type": "uint256"
-			}
-		],
-		"name": "listModel",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "modelId",
-				"type": "uint256"
-			}
-		],
-		"name": "ModelDeleted",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "modelId",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "name",
-				"type": "string"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "price",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "address",
-				"name": "owner",
-				"type": "address"
-			}
-		],
-		"name": "ModelListed",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "modelId",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "address",
-				"name": "buyer",
-				"type": "address"
-			}
-		],
-		"name": "ModelPurchased",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "modelId",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint8",
-				"name": "rating",
-				"type": "uint8"
-			},
-			{
-				"indexed": false,
-				"internalType": "address",
-				"name": "rater",
-				"type": "address"
-			}
-		],
-		"name": "ModelRated",
-		"type": "event"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "modelId",
-				"type": "uint256"
-			}
-		],
-		"name": "purchaseModel",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "modelId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint8",
-				"name": "rating",
-				"type": "uint8"
-			}
-		],
-		"name": "rateModel",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "withdrawFunds",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "getAllModels",
-		"outputs": [
-			{
-				"components": [
-					{
-						"internalType": "string",
-						"name": "name",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "description",
-						"type": "string"
-					},
-					{
-						"internalType": "uint256",
-						"name": "price",
-						"type": "uint256"
-					},
-					{
-						"internalType": "address payable",
-						"name": "owner",
-						"type": "address"
-					},
-					{
-						"internalType": "bool",
-						"name": "isSold",
-						"type": "bool"
-					},
-					{
-						"internalType": "uint8",
-						"name": "totalRatings",
-						"type": "uint8"
-					},
-					{
-						"internalType": "uint256",
-						"name": "ratingSum",
-						"type": "uint256"
-					}
-				],
-				"internalType": "struct AIModelMarketplace.Model[]",
-				"name": "",
-				"type": "tuple[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "modelId",
-				"type": "uint256"
-			}
-		],
-		"name": "getModelDetails",
-		"outputs": [
-			{
-				"internalType": "string",
-				"name": "name",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "description",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "price",
-				"type": "uint256"
-			},
-			{
-				"internalType": "address",
-				"name": "owner",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "averageRating",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "hasRated",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "modelId",
-				"type": "uint256"
-			}
-		],
-		"name": "isValidModelId",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "models",
-		"outputs": [
-			{
-				"internalType": "string",
-				"name": "name",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "description",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "price",
-				"type": "uint256"
-			},
-			{
-				"internalType": "address payable",
-				"name": "owner",
-				"type": "address"
-			},
-			{
-				"internalType": "bool",
-				"name": "isSold",
-				"type": "bool"
-			},
-			{
-				"internalType": "uint8",
-				"name": "totalRatings",
-				"type": "uint8"
-			},
-			{
-				"internalType": "uint256",
-				"name": "ratingSum",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	}
-]; // Add the ABI of your contract here
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+app.use(express.json()); // Enable JSON request body parsing
+
+const storage = multer.diskStorage({
+    destination: "./public/uploads", // Папка, куда будут сохраняться файлы
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname)); // Уникальное имя файла
+    },
+});
+const upload = multer({ storage: storage });
+app.use(session({
+    secret: "your-secret-key",
+    resave: false,
+    saveUninitialized: true
+}));
 
 // Example usage
 app.set('views', path.join(__dirname, 'views'));
-const contractAddress = '0x63a4E3b2fAF514782744eB2783fDdD8cD5Ef32a9'; // Replace with your contract address
+const tokenABI = JSON.parse(fs.readFileSync("./tABI.json", "utf8"));
+const contractABI = JSON.parse(fs.readFileSync("./cABI.json", "utf8"));
+const tokenAddress = '0x5aF3fc6E6dCf121c817Be159ecAd4cd8e4f79715';
+const contractAddress = '0x4AD0d238d39354716a11CAE9c84A8AaA3E432DF6'; // Replace with your contract address
+const token = new web3.eth.Contract(tokenABI, tokenAddress);
 const contract = new web3.eth.Contract(contractABI, contractAddress);
 async function interactWithContract(modelId) {
     try {
@@ -381,6 +57,7 @@ async function interactWithContract(modelId) {
 
 // Example usage
 interactWithContract(1);
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 (async () => {
@@ -393,80 +70,137 @@ app.set('view engine', 'ejs'); // render views with ejs as templating engine
 // Routes
 
 // render homepage route
-app.get('/', async (req, res) => {
+app.get('/', (req, res) => {
+    res.render('login');
+});
+
+
+// Handle User Login
+app.post("/user-login", (req, res) => {
+    const { account } = req.body;
+    if (account) {
+        req.session.userAddress = account;  // Store address in session
+        res.send("Address stored successfully!");
+    } else {
+        res.status(400).send("Missing address.");
+    }
+});
+
+// Handle Admin Login
+app.post('/admin-login', (req, res) => {
+    const { adminUsername, adminPassword } = req.body;
+    console.log(`Admin Login: ${adminUsername}`);
+    res.send("Admin login successful!");
+});
+
+app.get('/index', async (req, res) => {
     let models = [];
+    let balance = 0;  // Ensure balance is always defined
+
+    const address = req.query.address;
+    console.log("Address from request:", address);
+
+    if (address) {
+        try {
+            balance = await token.methods.balanceOf(address).call();
+            const decimals = 18;
+            balance = Math.floor(ethers.formatUnits(balance, decimals));
+        } catch (error) {
+            console.error("Error fetching balance:", error);
+        }
+    }
+
+    console.log("Final Balance:", balance);
+
     try {
         const allModels = await contract.methods.getAllModels().call();
+        const contractOwner = "0x123..."; // Адрес владельца контракта (зависит от вашей логики)
+
         models = allModels.map((model, index) => ({
             id: index,
             name: model.name,
             description: model.description,
             price: web3.utils.fromWei(model.price, 'ether'),
             owner: model.owner,
-            averageRating: model.totalRatings > 0 ? model.ratingSum / model.totalRatings : 0
+            averageRating: model.totalRatings > 0 ? model.ratingSum / model.totalRatings : 0,
+            isSold: model.isSold
         }));
     } catch (error) {
         console.error('Error fetching models:', error);
     }
-    res.render('index', { models });
+
+    res.render('index', { models, balance, address });
+});
+
+app.get("/download/:id", (req, res) => {
+    const file = filesDB[req.params.id];
+    if (!file) {
+        return res.status(404).send("File not found.");
+    }
+    res.download(file.path, file.name);
+});
+
+// render homepage route
+app.post('/add', upload.single("file"), async (req, res) => {
+    const { name, description, price } = req.body;
+
+    if (!name || !description || isNaN(price)) {
+        return res.status(400).send('Некорректные данные');
+    }
+	if (!req.file) {
+        return res.status(400).send('Файл не загружен');
+    }
+
+    // Сохраняем файл в базе
+    const fileId = Date.now().toString(); // Уникальный ID файла
+    filesDB[fileId] = {
+        path: req.file.path,
+        name: req.file.originalname
+    };
+    // Проверяем, загружен ли файл
+    const filePath = "/uploads/" + req.file.filename;
+
+    const accounts = await web3.eth.getAccounts();
+    const sender = accounts[0];
+
+    try {
+        // Передаем путь к файлу в контракт (если он используется)
+        await contract.methods.listModel(name, description, web3.utils.toWei(price, 'ether'), filePath)
+            .send({ from: sender, gas: 3000000 });
+
+        res.redirect('/index');
+    } catch (error) {
+        console.error('Ошибка при добавлении модели:', error);
+        res.status(500).send('Ошибка при добавлении модели');
+    }
 });
 
 
-
-// render homepage route
-app.get('/add', (req, res) => {
-    res.render('add');
-    });
-
-
-	app.post('/add', async (req, res) => {
-		const { name, description, price } = req.body;
-	
-		if (!name || !description || isNaN(price)) {
-			return res.status(400).send('Некорректные данные');
-		}
-	
-		const accounts = await web3.eth.getAccounts();
-		const sender = accounts[0]; 
-		try {
-			await contract.methods.listModel(name, description, web3.utils.toWei(price, 'ether')).send({ from: sender, gas: 3000000 });
-			res.redirect('/');
-		} catch (error) {
-			console.error('Ошибка при добавлении модели:', error);
-			res.status(500).send('Ошибка при добавлении модели');
-		}
-	});
-	
 	app.get('/details/:id', async (req, res) => {
-		const modelId = req.params.id;
-	
 		try {
+			const modelId = req.params.id;
 			const modelDetails = await contract.methods.getModelDetails(modelId).call();
-			console.log('Model details:', modelDetails); // Проверка получаемых данных
 	
-			// Используем уже полученное значение рейтинга
-			const averageRating = modelDetails.averageRating || 0;
-	
-			console.log('Average Rating:', averageRating); // Проверка
+			if (!modelDetails) {
+				return res.status(404).send("Model not found");
+			}
 	
 			res.render('details', {
-				modelId,
-				name: modelDetails.name,
-				description: modelDetails.description,
-				price: web3.utils.fromWei(modelDetails.price, 'ether'),
-				owner: modelDetails.owner,
-				averageRating,
+				modelId: modelId,
+				name: modelDetails[0],  // Ensure the correct variable names
+				description: modelDetails[1],
+				price: web3.utils.fromWei(modelDetails[2], 'ether'),
+				averageRating: modelDetails[4] || "N/A",  // Handle missing ratings
+				file: modelDetails[5]
 			});
 		} catch (error) {
-			console.error('Error fetching model details:', error);
-			res.status(500).send('Error fetching model details');
+			console.error("Error fetching model details:", error);
+			res.status(500).send("Error fetching model details");
 		}
 	});
 	
 	
-	
-
-    app.get('/purchase/:id', async (req, res) => {
+	app.get('/purchase/:id', async (req, res) => {
 		try {
 			const modelId = parseInt(req.params.id, 10);
 			const allModels = await contract.methods.getAllModels().call();
@@ -498,48 +232,76 @@ app.get('/add', (req, res) => {
 		}
 	});
 	
-	
-	
-
-    
     app.post('/purchase/:id', async (req, res) => {
-		const modelId = req.params.id;
 		try {
-			const accounts = await web3.eth.getAccounts();
-			const buyer = accounts[1]; // In this case, it's the second account
+			const modelId = req.params.id;
+			const buyer = '0x25d8d8E620149804bbf9c0Baa66F18d5cAeA498C'; // Buyer's address
+	
+			// Get buyer's balance
+			const balance = await token.methods.balanceOf(buyer).call();
+			console.log('Buyer balance:', balance);
 	
 			// Get model details
 			const modelDetails = await contract.methods.getModelDetails(modelId).call();
-			const modelPrice = modelDetails[2]; // Model price (in Wei)
+			const modelPrice = modelDetails[2]; // Model price in Wei
 			const isSold = modelDetails[4]; // Model sold status
+	
+			console.log('Model price:', modelPrice);
+			console.log('Is sold:', isSold);
 	
 			// Check if the model is already sold
 			if (isSold) {
 				return res.status(400).send('This model has already been sold.');
 			}
 	
-			console.log(`Model with ID ${modelId} purchased by ${buyer}`);
+			// Ensure buyer has enough tokens
+			if (BigInt(balance) < BigInt(modelPrice)) {
+				throw new Error("Not enough UN tokens to purchase this model.");
+			}
+	
+			// Check if the marketplace contract has approval
+			const allowance = await token.methods.allowance(buyer, contract.options.address).call();
+			console.log('Current allowance:', allowance);
+	
+			if (BigInt(allowance) < BigInt(modelPrice)) {
+				console.log(`Approving transfer of ${modelPrice} UN tokens for model ${modelId} by ${buyer}`);
+	
+				// Approve the marketplace contract to spend UN tokens
+				const approveReceipt = await token.methods.approve(contract.options.address, modelPrice).send({ from: buyer });
+				console.log('Approve transaction receipt:', approveReceipt);
+	
+				// Verify the new allowance
+				const newAllowance = await token.methods.allowance(buyer, contract.options.address).call();
+				console.log('New allowance:', newAllowance);
+	
+				if (BigInt(newAllowance) < BigInt(modelPrice)) {
+					throw new Error("Approval failed. Insufficient allowance.");
+				}
+			}
+	
+			console.log("Approval successful!");
 	
 			// Proceed with the purchase
+			console.log(`Purchasing model ${modelId} with ${modelPrice} UN tokens`);
 			const transaction = await contract.methods.purchaseModel(modelId).send({
 				from: buyer,
-				value: modelPrice // Payment for the model
+				gas: 5000000 // Set a higher gas limit
 			});
 	
 			console.log('Transaction result:', transaction);
-    
-        // Отправляем успешное сообщение на клиентскую сторону
-        res.send(`
-            <script>
-                alert("Purchase successful!");
-                window.location.href = "/review/${modelId}"; // Перенаправляем на страницу с рейтингом
-            </script>
-        `);
-    } catch (error) {
-        console.error('Error during purchase:', error);
-        res.status(500).send('Error during purchase');
-    }
-});
+	
+			// Send a success message and redirect
+			res.send(`
+				<script>
+					alert("Purchase successful!");
+					window.location.href = "/review/${modelId}"; // Redirect to review page
+				</script>
+			`);
+		} catch (error) {
+			console.error('Error during purchase:', error);
+			res.status(500).send(`Error during purchase: ${error.message}`);
+		}
+	});
 	
 app.get('/review/:id', async (req, res) => {
     const modelId = req.params.id;
@@ -555,7 +317,6 @@ app.get('/review/:id', async (req, res) => {
         res.status(500).send('Error fetching model details');
     }
 });
-
 
 	app.post('/review/:id', async (req, res) => {
 		const modelId = req.params.id; // Получаем ID модели из URL
@@ -573,39 +334,32 @@ app.get('/review/:id', async (req, res) => {
 			await contract.methods.rateModel(modelId, rating).send({ from: buyer });
 	
 			// Перенаправляем пользователя обратно на страницу с деталями модели
-			res.redirect(`/`);
+			res.redirect(`/index`);
 		} catch (error) {
 			console.error('Error submitting review:', error);
 			res.status(500).send('Error submitting review');
 		}
 	});
-	
 	app.get('/delete-model/:id', async (req, res) => {
 		const { id } = req.params;
 	
 		try {
 			const accounts = await web3.eth.getAccounts();
-			const sender = accounts[0]; // Replace with the address you want to use
+			const sender = accounts[6]; // Explicitly setting the owner account
 	
-			// Interact with the smart contract to delete the model
+			console.log(`Sender: ${sender}`);
+			console.log(`Expected owner: 0x25d8d8E620149804bbf9c0Baa66F18d5cAeA498C`);
+	
 			await contract.methods.deleteModel(id).send({ from: sender, gas: 3000000 });
 	
 			console.log(`Model with ID ${id} deleted successfully.`);
-			res.redirect('/'); // Redirect to the homepage after deletion
+			res.redirect('/index'); // Redirect to the homepage after deletion
 		} catch (error) {
 			console.error('Error deleting model:', error);
 			res.status(500).send('Ошибка при удалении модели');
 		}
 	});
-
-	app.post('/delete-model/:id', (req, res) => {
-		const modelId = req.params.id;
 	
-		// Удаляем модель из базы данных
-		deleteModelById(modelId);
 	
-		// Перенаправляем обратно в каталог
-		res.redirect('/');
-	});
 const PORT = 3000;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));

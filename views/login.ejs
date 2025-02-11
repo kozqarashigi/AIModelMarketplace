@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI model marketplace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <link rel="stylesheet" href="/style2.css">
+    <script src = "/js_functions.js" defer></script>
+</head>
+<body>
+    <h1>Welcome to the AI Marketplace!</h1>
+    <div class="container">
+        <div class="form-container">
+            <div class="toggle">
+                <button id="userBtn">Authorize</button>
+                
+            </div>
+
+            <div class="form-box">
+                
+                <form id="userForm" action="/user-login" method="POST">
+                    <h2>Login with MetaMask</h2>
+                    <input type="text" id="inputAccount" placeholder="Enter your MetaMask address" required>
+                    <button type="button" id="connectMetamask">Connect via MetaMask</button>
+                </form>
+
+                
+                
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

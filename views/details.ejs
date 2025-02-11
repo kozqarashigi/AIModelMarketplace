@@ -8,7 +8,7 @@
 </head>
 <body>
     <h1>More details</h1>
-    <form action="/edit/<%= modelId %>" method="POST">
+    <form action="/details/<%= modelId %>" method="POST">
         <table class = "model-table">
             <thead>
                 <tr>
@@ -16,18 +16,21 @@
                     <th>Description</th>
                     <th>Price (ETH)</th>
                     <th>Rating</th>
+                    <th>File</th>
                 </tr>
             </thead>
             <tr>
                 <td><%= name %></td>
-                <td><%= description %></td>
-                <td><%= price %></td>
-                <td> <%= averageRating %></td>
+            <td><%= description %></td>
+            <td><%= price %></td>
+            <td><%= averageRating %></td>
+            <td><a href="/download/<%= file.id %>">Download File</a></td>
+        
             </tr>
         </table>
     </form>
-    <a href='/'>
-        <img class = "back" src = "/back.png">
+    <a href='/index'>
+        <img class = "back" src = "/next.png">
     </a>
 </body>
 </html>
